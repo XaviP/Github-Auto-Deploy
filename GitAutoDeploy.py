@@ -3,6 +3,7 @@
 import json, urlparse, sys, os
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from subprocess import call
+import ssl
 
 class GitAutoDeploy(BaseHTTPRequestHandler):
 
@@ -122,6 +123,7 @@ def main():
             print 'Github Autodeploy Service v 0.2 started in daemon mode'
              
         server = HTTPServer(('', GitAutoDeploy.getConfig()['port']), GitAutoDeploy)
+        server.socket = ssl.wrap_socket (server.socket, certfile='./cert.pem', server_side=True)
         server.serve_forever()
     except (KeyboardInterrupt, SystemExit) as e:
         if(e): # wtf, why is this creating a new line?
